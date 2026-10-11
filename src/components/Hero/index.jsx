@@ -1,156 +1,10 @@
-import { useRef, useState, useEffect, Suspense, Component } from "react"
-import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { motion } from "framer-motion"
-import { ArrowDown, FileText, ChevronRight } from "lucide-react"
-import * as THREE from "three"
+import { ArrowDown, FileText } from "lucide-react"
 import { profile } from "../../data/profile"
 import { projects } from "../../data/projects"
 import { hackathons } from "../../data/hackathons"
 import { dsaStats } from "../../data/dsa"
 import { isRealValue } from "../../utils/hasContent"
-import ComputationalCore from "./ComputationalCore"
-
-// ── Error Boundary ──────────────────────────────────────────────────────────
-class CanvasErrorBoundary extends Component {
-  constructor(props) { super(props); this.state = { hasError: false } }
-  static getDerivedStateFromError() { return { hasError: true } }
-  render() {
-    if (this.state.hasError) return (
-      <div className="w-full h-full flex items-center justify-center text-text-muted text-sm">
-        <div className="text-center">
-          <div className="text-4xl mb-2">⬡</div>
-          <p>3D unavailable</p>
-        </div>
-      </div>
-    )
-    return this.props.children
-  }
-}
-
-// ── Tech Node Labels ─────────────────────────────────────────────────────────
-const TECH_NODES = [
-  { label: "Java",      pos: [1.8, 0.5, 0],    color: "#f89820" },
-  { label: "Python",    pos: [-1.6, 1.0, 0.5],  color: "#3776ab" },
-  { label: "Spring",    pos: [0.8, 1.8, -0.5],  color: "#6db33f" },
-  { label: "MySQL",     pos: [-0.9, -1.5, 0.3], color: "#4479a1" },
-  { label: "MongoDB",   pos: [2.0, -0.8, 0.2],  color: "#47a248" },
-  { label: "Redis",     pos: [-2.1, 0.1, -0.4], color: "#dc382d" },
-  { label: "Docker",    pos: [0.3, -2.0, 0.6],  color: "#2496ed" },
-  { label: "Kafka",     pos: [1.2, -1.2, -0.8], color: "#a78bfa" },
-  { label: "React",     pos: [-1.3, -0.8, 1.0], color: "#61dafb" },
-  { label: "Git",       pos: [-0.4, 2.0, -0.3], color: "#f05032" },
-  { label: "AI/ML",     pos: [1.5, 1.2, 0.9],   color: "#34d399" },
-  { label: "REST",      pos: [-1.8, 1.5, -0.6], color: "#22d3ee" },
-  { label: "NumPy",     pos: [0.6, -1.6, -1.0], color: "#013243" },
-  { label: "Pandas",    pos: [-0.7, 0.9, 1.5],  color: "#150458" },
-  { label: "DSA",       pos: [2.2, 0.2, -0.7],  color: "#6366f1" },
-  { label: "Security",  pos: [-2.0, -1.2, 0.8], color: "#f472b6" },
-  { label: "Hibernate", pos: [1.0, 0.0, -1.8],  color: "#59666c" },
-  { label: "JS",        pos: [-0.2, -0.5, 2.0], color: "#f7df1e" },
-  { label: "Swagger",   pos: [1.8, -1.8, 0.5],  color: "#85ea2d" },
-  { label: "Cloud",     pos: [-1.5, -0.2, -1.5],color: "#60a5fa" },
-]
-
-const CONNECTIONS = [
-  [0,2],[0,3],[0,14],[0,16],[1,10],[1,12],[1,13],[2,3],[2,16],[3,4],
-  [4,5],[5,8],[6,7],[7,14],[8,11],[9,0],[10,12],[11,1],[15,5],[17,8]
-]
-
-function Node({ position, color, label }) {
-  const mesh = useRef()
-  const [hovered, setHovered] = useState(false)
-  useFrame((state) => {
-    if (mesh.current) {
-      mesh.current.rotation.x = state.clock.elapsedTime * 0.3
-      mesh.current.rotation.y = state.clock.elapsedTime * 0.4
-      const s = hovered ? 1.5 : 1
-      mesh.current.scale.lerp(new THREE.Vector3(s, s, s), 0.1)
-    }
-  })
-  return (
-    <mesh
-      ref={mesh}
-      position={position}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-    >
-      <sphereGeometry args={[0.1, 16, 16]} />
-      <meshStandardMaterial
-        color={color}
-        emissive={color}
-        emissiveIntensity={hovered ? 1.5 : 0.8}
-        roughness={0.1}
-        metalness={0.8}
-      />
-    </mesh>
-  )
-}
-
-function ConnectionLine({ from, to }) {
-  const ref = useRef()
-  const start = new THREE.Vector3(...from)
-  const end = new THREE.Vector3(...to)
-  const points = [start, end]
-  const geometry = new THREE.BufferGeometry().setFromPoints(points)
-  return (
-    <line geometry={geometry}>
-      <lineBasicMaterial color="#1e1e4e" transparent opacity={0.5} />
-    </line>
-  )
-}
-
-function Particles() {
-  const ref = useRef()
-  const count = 200
-  const positions = new Float32Array(count * 3)
-  for (let i = 0; i < count; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 8
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 8
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 8
-  }
-  useFrame((state) => {
-    if (ref.current) ref.current.rotation.y = state.clock.elapsedTime * 0.02
-  })
-  return (
-    <points ref={ref}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
-      </bufferGeometry>
-      <pointsMaterial size={0.015} color="#6366f1" transparent opacity={0.6} />
-    </points>
-  )
-}
-
-function SceneCamera({ mouse }) {
-  const { camera } = useThree()
-  useFrame(() => {
-    camera.position.x += (mouse.current.x * 0.6 - camera.position.x) * 0.04
-    camera.position.y += (mouse.current.y * 0.4 - camera.position.y) * 0.04
-    camera.lookAt(0, 0, 0)
-  })
-  return null
-}
-
-function NodeNetwork({ mouse }) {
-  return (
-    <>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[5, 5, 5]} color="#6366f1" intensity={2.5} />
-      <pointLight position={[-5, -5, -5]} color="#22d3ee" intensity={2} />
-      <SceneCamera mouse={mouse} />
-      <ComputationalCore />
-      {TECH_NODES.map((node, i) => (
-        <Node key={i} position={node.pos} color={node.color} label={node.label} />
-      ))}
-      {CONNECTIONS.map(([a, b], i) => (
-        <ConnectionLine key={i} from={TECH_NODES[a].pos} to={TECH_NODES[b].pos} />
-      ))}
-    </>
-  )
-}
 
 // ── Animation Variants ───────────────────────────────────────────────────────
 const container = {
@@ -162,36 +16,28 @@ const item = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] } }
 }
 
-// ── Hero Component ───────────────────────────────────────────────────────────
 export default function Hero() {
-  const mouse = useRef({ x: 0, y: 0 })
-
-  useEffect(() => {
-    const onMove = (e) => {
-      mouse.current.x = (e.clientX / window.innerWidth - 0.5) * 2
-      mouse.current.y = -(e.clientY / window.innerHeight - 0.5) * 2
-    }
-    window.addEventListener("mousemove", onMove)
-    return () => window.removeEventListener("mousemove", onMove)
-  }, [])
-
   const scrollToProjects = () => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })
+
+  const nameParts = (profile.name || "Vinay Sharma").split(" ")
+  const first = nameParts[0] || "VINAY"
+  const rest = nameParts.slice(1).join(" ") || "SHARMA"
 
   return (
     <section id="home" className="relative min-h-screen flex items-center grid-bg overflow-hidden">
       {/* Background gradient blobs */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none select-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl" style={{ background: "radial-gradient(circle, #6366f1, transparent)" }} />
         <div className="absolute bottom-1/4 right-1/4 w-72 h-72 rounded-full opacity-8 blur-3xl" style={{ background: "radial-gradient(circle, #22d3ee, transparent)" }} />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-6 w-full py-24 grid lg:grid-cols-2 gap-16 items-center">
-        {/* ─ Left: Text ─ */}
+      <div className="relative max-w-7xl mx-auto px-6 w-full py-24 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        {/* ─ Left: Text & Bio ─ */}
         <motion.div
           variants={container}
           initial="hidden"
           animate="visible"
-          className="space-y-8"
+          className="space-y-6"
         >
           {/* Availability badge with Spider-Sense wave & radar ping */}
           <motion.div variants={item} className="inline-flex items-center gap-2">
@@ -204,40 +50,23 @@ export default function Hero() {
             </span>
           </motion.div>
 
-          {/* Name with Spider-Verse Chromatic Glitch */}
-          <motion.div variants={item}>
-            <h1 className="font-display font-black leading-none tracking-tighter" style={{ fontSize: "clamp(4rem, 10vw, 7rem)" }}>
-              {(() => {
-                const nameParts = (profile.name || "Vinay Sharma").split(" ")
-                const first = nameParts[0] || "VINAY"
-                const rest = nameParts.slice(1).join(" ") || "SHARMA"
-                return (
-                  <div className="spider-glitch" data-text={`${first} ${rest}`}>
-                    <span className="block text-text-primary uppercase tracking-tight">{first}</span>
-                    <span className="block gradient-text uppercase tracking-tight">{rest}</span>
-                  </div>
-                )
-              })()}
-            </h1>
-          </motion.div>
-
-          {/* Subtitle */}
-          <motion.p variants={item} className="text-text-muted font-mono text-sm tracking-widest uppercase">
+          {/* Academic / Degree line */}
+          <motion.p variants={item} className="text-accent-cyan font-mono text-xs sm:text-sm tracking-widest uppercase">
             {[profile.degree, profile.branch, profile.semester].filter(isRealValue).join(" · ") || "Computer Science & Engineering"}
           </motion.p>
 
-          {/* Tagline */}
-          <motion.p variants={item} className="text-text-secondary text-xl leading-relaxed max-w-lg">
+          {/* Main Headline */}
+          <motion.h1 variants={item} className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-text-primary tracking-tight leading-[1.18]">
             {profile.tagline || "I build scalable software, intelligent systems, and interactive digital experiences."}
-          </motion.p>
+          </motion.h1>
 
           {/* Bio */}
-          <motion.p variants={item} className="text-text-muted text-base leading-relaxed max-w-lg">
+          <motion.p variants={item} className="text-text-secondary text-base sm:text-lg leading-relaxed max-w-lg">
             {profile.introduction || "Computer Science undergraduate focused on software development, backend engineering, problem solving, and emerging technologies."}
           </motion.p>
 
           {/* CTAs */}
-          <motion.div variants={item} className="flex flex-wrap gap-4">
+          <motion.div variants={item} className="flex flex-wrap gap-4 pt-2">
             <button onClick={scrollToProjects} className="btn-primary" data-cursor="EXPLORE">
               Explore My Work <ArrowDown size={16} />
             </button>
@@ -270,34 +99,64 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* ─ Right: 3D Scene ─ */}
+        {/* ─ Right: Animated Name Showcase (shifted in place of animation) ─ */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.3 }}
-          className="relative w-full aspect-square lg:aspect-auto lg:h-[600px]"
+          transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.2 }}
+          className="relative flex items-center justify-center w-full"
         >
-          <CanvasErrorBoundary>
-            <Canvas
-              dpr={[1, 2]}
-              camera={{ position: [0, 0, 5], fov: 60 }}
-              style={{ background: "transparent" }}
-            >
-              <Suspense fallback={null}>
-                <NodeNetwork mouse={mouse} />
-              </Suspense>
-            </Canvas>
-          </CanvasErrorBoundary>
+          <div className="relative w-full max-w-lg p-8 sm:p-12 rounded-3xl bg-bg-card/50 border border-border/80 backdrop-blur-xl shadow-2xl flex flex-col items-center justify-center text-center overflow-hidden group hover:border-accent-indigo/50 transition-all duration-300">
+            {/* Ambient inner glow blobs */}
+            <div className="absolute -top-24 -left-24 w-52 h-52 rounded-full bg-accent-indigo/20 blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -right-24 w-52 h-52 rounded-full bg-accent-cyan/20 blur-3xl pointer-events-none" />
 
-          {/* Decorative ring */}
-          <div
-            className="absolute inset-4 rounded-full pointer-events-none"
-            style={{ border: "1px solid rgba(99,102,241,0.1)", animation: "spin 30s linear infinite" }}
-          />
-          <div
-            className="absolute inset-12 rounded-full pointer-events-none"
-            style={{ border: "1px dashed rgba(34,211,238,0.08)", animation: "spin 20s linear infinite reverse" }}
-          />
+            {/* Subtle grid pattern */}
+            <div
+              className="absolute inset-0 pointer-events-none opacity-[0.04]"
+              style={{
+                backgroundImage: "linear-gradient(rgba(99,102,241,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.5) 1px,transparent 1px)",
+                backgroundSize: "30px 30px"
+              }}
+            />
+
+            {/* Top eyebrow / badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-accent-cyan bg-accent-cyan/10 border border-accent-cyan/20 mb-6">
+              <span>✦</span> Software Engineer & Builder
+            </div>
+
+            {/* The Animated Text: Name with Spider-Verse Chromatic Glitch */}
+            <div className="py-2 select-none">
+              <div
+                className="spider-glitch font-display font-black leading-[0.92] tracking-tighter"
+                data-text={`${first} ${rest}`}
+                style={{ fontSize: "clamp(3.5rem, 8vw, 6rem)" }}
+              >
+                <span className="block text-text-primary uppercase tracking-tight">
+                  {first}
+                </span>
+                <span className="block gradient-text uppercase tracking-tight">
+                  {rest}
+                </span>
+              </div>
+            </div>
+
+            {/* Titles / Specializations */}
+            <div className="mt-8 flex flex-wrap justify-center gap-2">
+              {(profile.titles || ["Full-Stack Dev", "Backend Systems", "AI/ML Explorer"]).map((title, idx) => (
+                <span
+                  key={idx}
+                  className="text-xs font-mono px-3 py-1 rounded-lg bg-bg-secondary/90 border border-border text-text-secondary"
+                >
+                  {title}
+                </span>
+              ))}
+            </div>
+
+            {/* Corner tech indicators */}
+            <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-accent-cyan animate-pulse" />
+            <div className="absolute bottom-3 left-3 w-2 h-2 rounded-full bg-accent-indigo" />
+          </div>
         </motion.div>
       </div>
 
@@ -306,7 +165,7 @@ export default function Hero() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
+        transition={{ delay: 1.5 }}
       >
         <span className="text-text-muted text-xs font-mono tracking-widest uppercase">Scroll</span>
         <motion.div
