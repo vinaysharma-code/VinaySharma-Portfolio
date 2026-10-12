@@ -6,10 +6,10 @@ import GlobalParticleField from "./components/ui/GlobalParticleField"
 import Navbar from "./components/Navbar"
 import Hero from "./components/Hero"
 import About from "./components/About"
+import Hackathons from "./components/Hackathons"
 import Journey from "./components/Journey"
 import TechStack from "./components/TechStack"
 import Projects from "./components/Projects"
-import Achievements from "./components/Achievements"
 import Certifications from "./components/Certifications"
 import DSA from "./components/DSA"
 import Learning from "./components/Learning"
@@ -124,11 +124,11 @@ export default function App() {
         <Journey />
         <TechStack />
         <Projects />
-        <Achievements />
         <Certifications />
         <DSA />
         <Learning />
         <Resume />
+        <Hackathons />
         <Contact />
       </main>
 

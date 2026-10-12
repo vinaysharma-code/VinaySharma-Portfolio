@@ -1,138 +1,57 @@
 export const hackathons = [
   {
-    "id": "hackathon-001",
-    "name": "Smart India Hackathon 2026",
-    "shortName": "SIH 2026",
-    "problemStatement": "Problem Statement 26227",
-    "concept": "Offline/On-Premises Satellite Imagery Archive & Retrieval System",
-    "description": "An advanced satellite imagery archive and retrieval system designed for offline/on-premises deployment. The system supports semantic retrieval, multimodal querying, multi-temporal and multi-spectral imagery, change detection, and false-alarm suppression — enabling intelligent geospatial intelligence without internet dependency.",
-    "role": "[ADD YOUR ROLE — e.g., Backend Developer / Full-Stack Developer / ML Engineer]",
-    "team": "[ADD TEAM NAME / MEMBER NAMES]",
-    "teamSize": "[ADD TEAM SIZE]",
-    "technologies": [
-      "Python",
-      "[ADD BACKEND TECHNOLOGY]",
-      "[ADD DATABASE]",
-      "[ADD ML FRAMEWORK]",
-      "[ADD MORE]"
-    ],
-    "implementedFeatures": [
-      "Semantic retrieval",
-      "Multimodal retrieval",
-      "Multi-temporal imagery support",
-      "Multi-spectral imagery support",
-      "Multi-sensor imagery support",
-      "Change detection",
-      "False-alarm suppression",
-      "Spatial/temporal filtering",
-      "Discovery and clustering",
-      "Incremental ingestion",
-      "Geospatial provenance tracking",
-      "Offline operation capability"
-    ],
-    "plannedFeatures": [
-      "Future change prediction",
-      "Negative search",
-      "Image overlay",
-      "Critical zone analysis",
-      "ECI (Environmental Change Index)",
-      "Intervention Impact Simulator"
-    ],
-    "achievement": "[ADD ACHIEVEMENT — e.g., Selected / Finalist / Winner]",
-    "position": "[ADD POSITION / RESULT]",
-    "date": "2026",
-    "location": "India",
-    "githubUrl": "[ADD GITHUB URL]",
-    "verificationUrl": "",
-    "coverPhoto": "/images/hackathons/sih-team.jpg",
-    "photos": [
+    id: "bgi-viksit-bharat",
+    name: "BGI Viksit Bharat Hackathon",
+    shortName: "Viksit Bharat",
+    level: "National Level",
+    achievement: "Winner · 1st Place (₹25,000)",
+    prize: "₹25,000",
+    date: "May 2024",
+    location: "Bhopal, India",
+    organizer: "Bansal Group of Institutes · In collaboration with HCLTech & IEEE",
+    concept: "Vision 2047 Viksit Bharat Innovation",
+    description: "Secured 1st Place and the winner cash award at the National-Level BGI Hackathon (Vision 2047: Viksit Bharat). Developed and presented an end-to-end technological solution solving complex national problem statements under tight competition constraints.",
+    photos: [
       {
-        "url": "/images/hackathons/sih-team.jpg",
-        "caption": "SIH 2026 Team during project demonstration",
-        "type": "team"
+        url: "/images/hackathons/bgi-viksit-bharat-1.jpg",
+        caption: "National Winner Award Ceremony · ₹25,000 Cheque Presentation",
+        type: "award"
       },
       {
-        "url": "/images/hackathons/sih-certificate.jpg",
-        "caption": "Smart India Hackathon 2026 Official Certificate",
-        "type": "certificate"
-      },
-      {
-        "url": "/images/hackathons/sih-presentation.jpg",
-        "caption": "Architecture & live system presentation to jury",
-        "type": "presentation"
+        url: "/images/hackathons/bgi-viksit-bharat-2.jpg",
+        caption: "Valedictory Stage Celebration with Faculty & Organizers",
+        type: "stage"
       }
     ],
-    "timeline": [
-      {
-        "step": "Problem",
-        "description": "Analyzed Problem Statement 26227",
-        "status": "completed"
-      },
-      {
-        "step": "Research",
-        "description": "Researched satellite imagery systems and retrieval algorithms",
-        "status": "completed"
-      },
-      {
-        "step": "Ideation",
-        "description": "Brainstormed architecture and system design",
-        "status": "completed"
-      },
-      {
-        "step": "Architecture",
-        "description": "Designed the complete system architecture",
-        "status": "completed"
-      },
-      {
-        "step": "Development",
-        "description": "Built core retrieval and indexing system",
-        "status": "completed"
-      },
-      {
-        "step": "Testing",
-        "description": "Validated system performance and accuracy",
-        "status": "completed"
-      },
-      {
-        "step": "Presentation",
-        "description": "Demonstrated the system to judges",
-        "status": "completed"
-      },
-      {
-        "step": "Achievement",
-        "description": "[ADD ACHIEVEMENT RESULT]",
-        "status": "current"
-      }
+    highlights: [
+      "National Level Competition with leading engineering institutes",
+      "Collaborated with HCLTech, IEEE, and industry mentors",
+      "Awarded 1st Prize Winner with ₹25,000 Cash Award"
     ]
   },
   {
-    "id": "hackathon-002",
-    "name": "[ADD HACKATHON NAME]",
-    "shortName": "[ADD SHORT NAME]",
-    "problemStatement": "[ADD PROBLEM STATEMENT]",
-    "concept": "[ADD CONCEPT / SOLUTION TITLE]",
-    "description": "[ADD DESCRIPTION OF YOUR SOLUTION AND APPROACH]",
-    "role": "[ADD YOUR ROLE]",
-    "team": "[ADD TEAM INFO]",
-    "teamSize": "[ADD TEAM SIZE]",
-    "technologies": [
-      "[ADD TECHNOLOGY 1]",
-      "[ADD TECHNOLOGY 2]"
+    id: "codictive-3",
+    name: "Codictive 3.0 Hackathon",
+    shortName: "Codictive 3.0",
+    level: "State Level",
+    achievement: "Winner · Trophy & ₹21,000",
+    prize: "₹21,000",
+    date: "2024",
+    location: "Bhopal, India",
+    organizer: "BIST in collaboration with Sheryians Coding School, IEEE & IIC",
+    concept: "Idea Hackathon 2K24 Software Innovation",
+    description: "Awarded the Winner Trophy and ₹21,000 cash prize at the state-level Codictive 3.0 (Idea Hackathon 2K24). Engineered a high-performance system architecture addressing real-world software needs, evaluated by industry leaders.",
+    photos: [
+      {
+        url: "/images/hackathons/codictive-hackathon.jpg",
+        caption: "Winner Trophy & Award Presentation · ₹21,000 Prize",
+        type: "trophy"
+      }
     ],
-    "implementedFeatures": [
-      "[ADD FEATURE 1]",
-      "[ADD FEATURE 2]"
-    ],
-    "plannedFeatures": [
-      "[ADD PLANNED FEATURE]"
-    ],
-    "achievement": "[ADD ACHIEVEMENT]",
-    "position": "[ADD RESULT]",
-    "date": "[ADD DATE]",
-    "location": "",
-    "githubUrl": "[ADD GITHUB URL]",
-    "verificationUrl": "",
-    "coverPhoto": "",
-    "photos": []
+    highlights: [
+      "State Level Hackathon organized with Sheryians Coding School",
+      "Endorsed by IEEE and Institution's Innovation Council (IIC)",
+      "Awarded Winner Trophy and ₹21,000 Cash Prize"
+    ]
   }
 ]
